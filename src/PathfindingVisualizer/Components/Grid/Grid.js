@@ -2,10 +2,6 @@ import React, { Component } from 'react'
 import Node from '../Node/Node'
 import './grid.css'
 
-const START_NODE_ROW = 10;
-const START_NODE_COL = 15;
-const FINISH_NODE_ROW = 10;
-const FINISH_NODE_COL = 35;
 
 
 export default class Grid extends Component {
@@ -14,31 +10,33 @@ export default class Grid extends Component {
         super(props)
         this.state = {
             grid: [],
-            width: 40,
-            height: 30
+            width: 30,
+            height: 30,
+            startNode: [15,5],
+            endNode: [15,25]
         }
     }
 
     componentDidMount() {
-        const grid = getInitialGrid(this.state.height, this.state.width);
+        const grid = this.getInitialGrid(this.state.height, this.state.width);
         this.setState({grid});
         console.log(grid)
     }
 
-    // handleMouseDown(row, col) {
-    //     const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
-    //     this.setState({ grid: newGrid, mouseIsPressed: true });
-    // }
+    handleMouseDown(row, col) {
+        const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
+        this.setState({ grid: newGrid, mouseIsPressed: true });
+    }
 
-    // handleMouseEnter(row, col) {
-    //     if (!this.state.mouseIsPressed) return;
-    //     const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
-    //     this.setState({ grid: newGrid });
-    // }
+    handleMouseEnter(row, col) {
+        if (!this.state.mouseIsPressed) return;
+        const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
+        this.setState({ grid: newGrid });
+    }
 
-    // handleMouseUp() {
-    //     this.setState({ mouseIsPressed: false });
-    // }
+    handleMouseUp() {
+        this.setState({ mouseIsPressed: false });
+    }
 
     render() {
         const { grid, mouseIsPressed } = this.state;
@@ -82,30 +80,40 @@ export default class Grid extends Component {
         )
     }
 
-
-}
-
-const getInitialGrid = (height, width) => {
-    const grid = [];
-    for (let row = 0; row < height; row++) {
-        const currentRow = [];
-        for (let col = 0; col < width; col++) {
-            currentRow.push(createNode(col, row));
+    getInitialGrid(height, width) {
+        const grid = [];
+        for (let row = 0; row < height; row++) {
+            const currentRow = [];
+            for (let col = 0; col < width; col++) {
+                currentRow.push(this.createNode(col, row));
+            }
+            grid.push(currentRow);
         }
-        grid.push(currentRow);
+        return grid;
     }
-    return grid;
+
+    createNode(col, row) {
+        return {
+            col,
+            row,
+            isStart: row === this.state.startNode[0] && col === this.state.startNode[1],
+            isFinish: row === this.state.endNode[0] && col === this.state.endNode[1],
+            distance: Infinity,
+            isVisited: false,
+            isWall: false,
+            previousNode: null,
+        };
+    };
+
 }
 
-const createNode = (col, row) => {
-    return {
-        col,
-        row,
-        isStart: row === START_NODE_ROW && col === START_NODE_COL,
-        isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
-        distance: Infinity,
-        isVisited: false,
-        isWall: false,
-        previousNode: null,
+const getNewGridWithWallToggled = (grid, row, col) => {
+    const newGrid = grid.slice();
+    const node = newGrid[row][col];
+    const newNode = {
+        ...node,
+        isWall: !node.isWall,
     };
+    newGrid[row][col] = newNode;
+    return newGrid;
 };

@@ -3,3 +3,11 @@
     width: 1.25rem;
     border: 1px solid grey;
 }
+
+.node-finish {
+  background-color: red;
+}
+
+.node-start {
+  background-color: green;
+}

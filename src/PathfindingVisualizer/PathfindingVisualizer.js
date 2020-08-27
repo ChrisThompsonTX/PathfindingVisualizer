@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Node from './Components/Node/Node'
 import Grid from './Components/Grid/Grid';
 
 export default class PathfindingVisualizer extends Component {
