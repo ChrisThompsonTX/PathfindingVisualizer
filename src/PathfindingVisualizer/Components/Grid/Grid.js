@@ -27,23 +27,22 @@ export default class Grid extends Component {
     }
 
     handleMouseDown(row, col) {
-        console.log(row,col)
         if (row === this.state.startNode[0] && col === this.state.startNode[1]) {
-            this.setState({ changeStart: true });
+            this.setState({ changeStart:true });
         } else if (row === this.state.endNode[0] && col === this.state.endNode[1]) {
             this.setState({ changeEnd: true });
         } else {
             const newGrid = this.getNewGridWithWallToggled(this.state.grid, row, col);
-            this.setState({ grid: newGrid, mouseIsPressed: true });
+            this.setState({ grid: newGrid });
         }
+        this.setState({mouseIsPressed: true})
     }
 
     handleMouseEnter(row, col) {
         if (!this.state.mouseIsPressed) return;
         if (this.state.changeStart) {
             const newGrid = this.getNewNode(this.state.grid, row, col, "changeStart")
-            this.setState({ startNode:[row,col] });
-            console.log('sup')
+            this.setState({ startNode:[row,col], grid: newGrid });
         } else if (this.state.changeEnd) {
             this.setState({ endNode: [row, col] });
         } else {
@@ -136,14 +135,21 @@ export default class Grid extends Component {
         return newGrid;
     };
 
-    getNewNode(grid, row, col, change) {
+    getNewNode(grid, row, col) {
         const newGrid = grid.slice();
         const node = newGrid[row][col];
         const newNode = {
             ...node,
             isStart: true,
         };
+        const oldStart = newGrid[this.state.startNode[0],this.state.startNode[1]]
+        const oldNode = {
+            ...oldStart,
+            isStart: false,
+        };
         newGrid[row][col] = newNode;
+        newGrid[this.state.startNode[0]][this.state.startNode[1]] = oldNode;
+        console.log(newGrid)
         return newGrid;
     };
 
