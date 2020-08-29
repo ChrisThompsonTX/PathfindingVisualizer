@@ -13,7 +13,10 @@ export default class Grid extends Component {
             width: 30,
             height: 30,
             startNode: [15,5],
-            endNode: [15,25]
+            endNode: [15,25],
+            mouseIsPressed: false,
+            changeStart: false,
+            changeEnd: false,
         }
     }
 
@@ -24,18 +27,35 @@ export default class Grid extends Component {
     }
 
     handleMouseDown(row, col) {
-        const newGrid = this.getNewGridWithWallToggled(this.state.grid, row, col);
-        this.setState({ grid: newGrid, mouseIsPressed: true });
+        console.log(row,col)
+        if (row === this.state.startNode[0] && col === this.state.startNode[1]) {
+            this.setState({ changeStart: true });
+        } else if (row === this.state.endNode[0] && col === this.state.endNode[1]) {
+            this.setState({ changeEnd: true });
+        } else {
+            const newGrid = this.getNewGridWithWallToggled(this.state.grid, row, col);
+            this.setState({ grid: newGrid, mouseIsPressed: true });
+        }
     }
 
     handleMouseEnter(row, col) {
         if (!this.state.mouseIsPressed) return;
-        const newGrid = this.getNewGridWithWallToggled(this.state.grid, row, col);
-        this.setState({ grid: newGrid });
+        if (this.state.changeStart) {
+            const newGrid = this.getNewNode(this.state.grid, row, col, "changeStart")
+            this.setState({ startNode:[row,col] });
+            console.log('sup')
+        } else if (this.state.changeEnd) {
+            this.setState({ endNode: [row, col] });
+        } else {
+            const newGrid = this.getNewGridWithWallToggled(this.state.grid, row, col);
+            this.setState({ grid: newGrid });
+        }
     }
 
     handleMouseUp() {
         this.setState({ mouseIsPressed: false });
+        this.setState({ changeEnd: false });
+        this.setState({ changeStart: false });
     }
 
     render() {
@@ -111,6 +131,17 @@ export default class Grid extends Component {
         const newNode = {
             ...node,
             isWall: !node.isWall,
+        };
+        newGrid[row][col] = newNode;
+        return newGrid;
+    };
+
+    getNewNode(grid, row, col, change) {
+        const newGrid = grid.slice();
+        const node = newGrid[row][col];
+        const newNode = {
+            ...node,
+            isStart: true,
         };
         newGrid[row][col] = newNode;
         return newGrid;
