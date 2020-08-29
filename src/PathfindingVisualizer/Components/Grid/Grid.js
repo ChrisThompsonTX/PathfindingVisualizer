@@ -42,7 +42,7 @@ export default class Grid extends Component {
         if (!this.state.mouseIsPressed) return;
         if (this.state.changeStart) {
             const newGrid = this.getNewNode(this.state.grid, row, col, "changeStart")
-            this.setState({ startNode:[row,col], grid: newGrid });
+            this.setState({ startNode:[row,col] });
         } else if (this.state.changeEnd) {
             this.setState({ endNode: [row, col] });
         } else {
@@ -147,8 +147,8 @@ export default class Grid extends Component {
             ...oldStart,
             isStart: false,
         };
-        newGrid[row][col] = newNode;
         newGrid[this.state.startNode[0]][this.state.startNode[1]] = oldNode;
+        newGrid[row][col] = newNode;
         console.log(newGrid)
         return newGrid;
     };
