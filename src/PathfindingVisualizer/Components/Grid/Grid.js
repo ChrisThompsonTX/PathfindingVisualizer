@@ -24,13 +24,13 @@ export default class Grid extends Component {
     }
 
     handleMouseDown(row, col) {
-        const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
+        const newGrid = this.getNewGridWithWallToggled(this.state.grid, row, col);
         this.setState({ grid: newGrid, mouseIsPressed: true });
     }
 
     handleMouseEnter(row, col) {
         if (!this.state.mouseIsPressed) return;
-        const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
+        const newGrid = this.getNewGridWithWallToggled(this.state.grid, row, col);
         this.setState({ grid: newGrid });
     }
 
@@ -42,7 +42,7 @@ export default class Grid extends Component {
         const { grid, mouseIsPressed } = this.state;
 
         return (
-            <div>
+            <div className="grid__container">
                 <div className="grid">
 
                     {grid.map((row, rowIdx) => {
@@ -105,15 +105,16 @@ export default class Grid extends Component {
         };
     };
 
-}
-
-const getNewGridWithWallToggled = (grid, row, col) => {
-    const newGrid = grid.slice();
-    const node = newGrid[row][col];
-    const newNode = {
-        ...node,
-        isWall: !node.isWall,
+    getNewGridWithWallToggled(grid, row, col) {
+        const newGrid = grid.slice();
+        const node = newGrid[row][col];
+        const newNode = {
+            ...node,
+            isWall: !node.isWall,
+        };
+        newGrid[row][col] = newNode;
+        return newGrid;
     };
-    newGrid[row][col] = newNode;
-    return newGrid;
-};
+
+
+}
