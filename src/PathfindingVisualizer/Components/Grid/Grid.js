@@ -149,6 +149,7 @@ export default class Grid extends Component {
         };
         newGrid[this.state.startNode[0]][this.state.startNode[1]] = oldNode;
         newGrid[row][col] = newNode;
+        this.setState({startNode: [row,col]})
         console.log(newGrid)
         return newGrid;
     };
