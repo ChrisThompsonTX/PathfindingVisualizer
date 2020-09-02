@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Node from '../Node/Node'
-import { dijkstra, getNodesInShortestPathOrder } from '../algorithms/dijkstra';
+import { dijkstra, getNodesInShortestPathOrder } from '../../Algos/dijkstra';
 
 import './grid.css'
 
@@ -104,41 +104,47 @@ export default class Grid extends Component {
         const { grid, mouseIsPressed } = this.state;
 
         return (
-            <div className="grid__container">
-                <div className="grid">
 
-                    {grid.map((row, rowIdx) => {
-                        return (
-                            <div key={rowIdx}>
-                                {row.map((node, nodeIdx) => {
-                                    const { row, col, isFinish, isStart, isWall } = node;
-                                    return (
-                                        <Node
-                                            key={nodeIdx}
-                                            col={col}
-                                            isFinish={isFinish}
-                                            isStart={isStart}
-                                            isWall={isWall}
-                                            mouseIsPressed={mouseIsPressed}
-                                            onMouseDown={
-                                                (row, col) => this.handleMouseDown(row, col)
-                                            }
-                                            onMouseEnter={
-                                                (row, col) => this.handleMouseEnter(row, col)
-                                            }
-                                            onMouseUp={
-                                                () => this.handleMouseUp()
-                                            }
-                                            row={row}>
-                                        </Node>
-                                    );
-                                })}
-                            </div>
-                        );
-                    })}
+            <>
+                <button onClick={() => this.visualizeDijkstra()}>
+                    Visualize Dijkstra's Algorithm
+                </button>
+                <div className="grid__container">
+                    <div className="grid">
 
+                        {grid.map((row, rowIdx) => {
+                            return (
+                                <div key={rowIdx}>
+                                    {row.map((node, nodeIdx) => {
+                                        const { row, col, isFinish, isStart, isWall } = node;
+                                        return (
+                                            <Node
+                                                key={nodeIdx}
+                                                col={col}
+                                                isFinish={isFinish}
+                                                isStart={isStart}
+                                                isWall={isWall}
+                                                mouseIsPressed={mouseIsPressed}
+                                                onMouseDown={
+                                                    (row, col) => this.handleMouseDown(row, col)
+                                                }
+                                                onMouseEnter={
+                                                    (row, col) => this.handleMouseEnter(row, col)
+                                                }
+                                                onMouseUp={
+                                                    () => this.handleMouseUp()
+                                                }
+                                                row={row}>
+                                            </Node>
+                                        );
+                                    })}
+                                </div>
+                            );
+                        })}
+
+                    </div>
                 </div>
-            </div>
+            </>
         )
     }
 
