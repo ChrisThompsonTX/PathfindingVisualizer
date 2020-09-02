@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import Node from '../Node/Node'
+import { dijkstra, getNodesInShortestPathOrder } from '../algorithms/dijkstra';
+
 import './grid.css'
 
 
@@ -56,6 +58,47 @@ export default class Grid extends Component {
         this.setState({ changeEnd: false });
         this.setState({ changeStart: false });
     }
+
+    animateShortestPath(nodesInShortestPathOrder) {
+        for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+            setTimeout(() => {
+                const node = nodesInShortestPathOrder[i];
+                document.getElementById(`node-${node.row}-${node.col}`).className =
+                    'node node-shortest-path';
+            }, 50 * i);
+        }
+    }
+
+    // Algos //
+
+        //Dijkstras
+
+        animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+            for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+                if (i === visitedNodesInOrder.length) {
+                    setTimeout(() => {
+                        this.animateShortestPath(nodesInShortestPathOrder);
+                    }, 10 * i);
+                    return;
+                }
+                setTimeout(() => {
+                    const node = visitedNodesInOrder[i];
+                    document.getElementById(`node-${node.row}-${node.col}`).className =
+                        'node node-visited';
+                }, 10 * i);
+            }
+        }
+
+        visualizeDijkstra() {
+            const { grid } = this.state;
+            const startNode = grid[this.state.startNode[0]][this.state.startNode[1]];
+            const finishNode = grid[this.state.endNode[0]][this.state.endNode[1]];
+            const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
+            const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+            this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+        }
+
+    //render
 
     render() {
         const { grid, mouseIsPressed } = this.state;
@@ -150,7 +193,6 @@ export default class Grid extends Component {
         newGrid[this.state.startNode[0]][this.state.startNode[1]] = oldNode;
         newGrid[row][col] = newNode;
         this.setState({startNode: [row,col]})
-        console.log(newGrid)
         return newGrid;
     };
 
